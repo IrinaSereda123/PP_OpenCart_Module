@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Разработка модулей OpenCart</title>
+    <style>
+        * {
+            margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                background: #f5f7fa;
+                font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+                line-height: 1.5;
+                color: #1e2a3e;
+                padding: 2rem 1rem;
+            }
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: #ffffff;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                overflow: hidden;
+            }
+            header {
+                background: #1e466e;
+                color: white;
+                padding: 1.8rem 2rem;
+                border-bottom: 4px solid #ffb347;
+            }
+            header h1 {
+                font-size: 1.9rem;
+                font-weight: 500;
+                letter-spacing: -0.3px;
+            }
+            header p {
+                margin-top: 0.5rem;
+                opacity: 0.85;
+                font-size: 1rem;
+            }
+            .discipline-badge {
+                display: inline-block;
+                background: #ffb347;
+                color: #1e2a3e;
+                padding: 0.2rem 0.8rem;
+                border-radius: 20px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                margin-top: 0.75rem;
+            }
+            nav {
+                background: #f8fafc;
+                padding: 0.75rem 2rem;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 0.9rem;
+            }
+            nav a {
+                color: #1e466e;
+                text-decoration: none;
+                margin-right: 1.5rem;
+                font-weight: 500;
+            }
+            nav a:hover {
+                text-decoration: underline;
+            }
+            main {
+                padding: 2rem;
+            }
+            h2 {
+                font-size: 1.6rem;
+                margin-top: 1.8rem;
+                margin-bottom: 1rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 2px solid #e2e8f0;
+                color: #0f2b3f;
+            }
+            h3 {
+                font-size: 1.3rem;
+                margin: 1.5rem 0 0.75rem 0;
+                color: #1e466e;
+            }
+            h4 {
+                font-size: 1.1rem;
+                margin: 1rem 0 0.5rem 0;
+                font-weight: 600;
+            }
+            p, li {
+                margin-bottom: 0.75rem;
+            }
+            .code-block {
+                background: #f1f5f9;
+                border-left: 4px solid #ffb347;
+                padding: 1rem;
+                margin: 1rem 0;
+                overflow-x: auto;
+                font-family: 'JetBrains Mono', 'Fira Code', monospace;
+                font-size: 0.85rem;
+                border-radius: 8px;
+            }
+            pre {
+                margin: 0;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+            code {
+                background: #eef2f6;
+                padding: 0.2rem 0.4rem;
+                border-radius: 4px;
+                font-size: 0.85rem;
+                font-family: monospace;
+            }
+            .file-path {
+                background: #eef2f6;
+                font-family: monospace;
+                padding: 0.2rem 0.5rem;
+                border-radius: 6px;
+                display: inline-block;
+                font-size: 0.8rem;
+                margin: 0.5rem 0;
+            }
+            .note {
+                background: #fef9e3;
+                border-left: 4px solid #ffb347;
+                padding: 0.75rem 1rem;
+                margin: 1rem 0;
+                border-radius: 6px;
+            }
+            .warning {
+                background: #fee2e2;
+                border-left: 4px solid #dc2626;
+            }
+            .task-list {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+                gap: 1.2rem;
+                margin: 1.5rem 0;
+            }
+            .task-card {
+                background: #f9fbfd;
+                border: 1px solid #e2edf2;
+                border-radius: 12px;
+                padding: 1rem 1.2rem;
+                transition: box-shadow 0.1s ease;
+            }
+            .task-card h4 {
+                margin-top: 0;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+            .task-num {
+                background: #1e466e;
+                color: white;
+                width: 28px;
+                height: 28px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 30px;
+                font-size: 0.8rem;
+                font-weight: bold;
+            }
+            hr {
+                margin: 2rem 0;
+                border: none;
+                border-top: 1px solid #e2e8f0;
+            }
+            footer {
+                background: #f1f5f9;
+                padding: 1.2rem 2rem;
+                text-align: center;
+                font-size: 0.8rem;
+                color: #4a627a;
+                border-top: 1px solid #e2e8f0;
+            }
+            @media (max-width: 700px) {
+                main {
+                    padding: 1.2rem;
+                }
+                header h1 {
+                    font-size: 1.5rem;
+                }
+            }
+        </style>
+    </head>
+    <body>
+    <div class="container">
+        <header>
+            <h1>Разработка модулей для OpenCart</h1>
+            <p>Архитектура MVC‑L, создание собственных расширений, практические задания</p>
+            <div class="discipline-badge">ИИТ БГУИР | Платформы программирования</div>
+        </header>
+        <nav>
+            <a href="#theory">Теория</a>
+            <a href="#guide">Руководство</a>
+            <a href="#tasks">Задания</a>
+            <a href="#resources">Ресурсы</a>
+        </nav>
+        <main>
+            <section id="theory">
+                <h2>Часть 1. Теоретическая база</h2>
+                <h3>Архитектура MVC‑L</h3>
+                <p>OpenCart построен на шаблоне MVC‑L (Model‑View‑Controller‑Language). Функциональность разделена на четыре слоя:</p>
+                <ul>
+                    <li><strong>Model</strong> – работа с базой данных и бизнес‑логика. Без HTML и прямых запросов.</li>
+                    <li><strong>View</strong> – шаблоны (Twig). Только отображение данных.</li>
+                    <li><strong>Controller</strong> – обработка запросов, загрузка моделей, языковых файлов, передача данных во view.</li>
+                    <li><strong>Language</strong> – текстовые константы для локализации.</li>
+                </ul>
+    
+                <h3>Структура каталогов модуля (на примере <code>my_module</code>)</h3>
+                <div class="code-block">
+                    <pre>my_module/
+├── admin/
+│   ├── controller/extension/module/my_module.php
+│   ├── model/extension/module/my_module.php
+│   ├── language/ru-ru/extension/module/my_module.php
+│   └── view/template/extension/module/my_module.twig
+└── catalog/
+    ├── controller/extension/module/my_module.php
+    ├── model/extension/module/my_module.php
+    ├── language/ru-ru/extension/module/my_module.php
+    └── view/theme/default/template/extension/module/my_module.twig</pre>
+                </div>
+    
+                <h3>Типы расширений</h3>
+                <ul>
+                    <li>Платежные шлюзы</li>
+                    <li>Методы доставки</li>
+                    <li>Итоги заказа (скидки, наценки)</li>
+                    <li>Каналы товаров (импорт/экспорт)</li>
+                    <li>Отчёты</li>
+                    <li>Модификации OCMOD и система событий (Events)</li>
+                </ul>
+                <div class="note">
+                    <strong>OCMOD vs События</strong><br>
+                    OCMOD (XML‑модификации) выполняет поиск/замену в файлах – менее надёжно.<br>
+                    Система событий (events) – современный подход, не изменяет файлы ядра, подключается к точкам входа.
+                </div>
+            </section>
+    
+            <section id="guide">
+                <h2>Часть 2. Пошаговое руководство. Модуль «Hello World»</h2>
+                <p>Создадим модуль, который выводит настраиваемый текст в левой колонке.</p>
+    
+                <h3>Подготовка</h3>
+                <ul>
+                    <li>Локальный сервер (OpenServer, XAMPP).</li>
+                    <li>Включение отображения ошибок: админ‑панель → Система → Настройки → вкладка «Сервер» → «Показывать ошибки» = Да. (После отладки выключить).</li>
+                    <li>Имя модуля: <code>hello_world</code>.</li>
+                </ul>
+    
+                <h3>Файловая структура</h3>
+                <div class="code-block"><pre>hello_world/
+├── admin/
+│   ├── controller/extension/module/hello_world.php
+│   ├── language/ru-ru/extension/module/hello_world.php
+│   └── view/template/extension/module/hello_world.twig
+└── catalog/
+    ├── controller/extension/module/hello_world.php
+    ├── language/ru-ru/extension/module/hello_world.php
+    └── view/theme/default/template/extension/module/hello_world.twig</pre></div>
+    
+                <h3>Административная часть</h3>
+                <div class="file-path">admin/language/ru-ru/extension/module/hello_world.php</div>
+                <div class="code-block"><pre>&lt;?php
+$_['heading_title'] = 'Модуль "Привет, мир!"';
+$_['text_success']  = 'Настройки модуля обновлены!';
+$_['text_edit']     = 'Редактирование модуля';
+$_['entry_name']    = 'Название модуля';
+$_['entry_title']   = 'Заголовок';
+$_['entry_message'] = 'Текст сообщения';
+$_['entry_status']  = 'Статус';
+$_['error_permission'] = 'У вас нет прав для управления этим модулем!';
+$_['error_name']       = 'Название модуля должно быть от 3 до 64 символов!';</pre></div>
+    
+                <div class="file-path">admin/controller/extension/module/hello_world.php</div>
+                <div class="code-block"><pre>&lt;?php
+class ControllerExtensionModuleHelloWorld extends Controller {
+    private $error = array();
+    public function index() {
+        $this->load->language('extension/module/hello_world');
+        $this->document->setTitle($this->language->get('heading_title'));
+        $this->load->model('setting/module');
+        if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
+            if (!isset($this->request->get['module_id']))
+                $this->model_setting_module->addModule('hello_world', $this->request->post);
+            else
+                $this->model_setting_module->editModule($this->request->get['module_id'], $this->request->post);
+            $this->session->data['success'] = $this->language->get('text_success');
+            $this->response->redirect($this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true));
+        }
+        $data['heading_title'] = $this->language->get('heading_title');
+        $data['text_edit'] = $this->language->get('text_edit');
+        $data['entry_name'] = $this->language->get('entry_name');
+        $data['entry_title'] = $this->language->get('entry_title');
+        $data['entry_message'] = $this->language->get('entry_message');
+        $data['entry_status'] = $this->language->get('entry_status');
+        $data['button_save'] = $this->language->get('button_save');
+        $data['button_cancel'] = $this->language->get('button_cancel');
+        $data['action'] = $this->url->link('extension/module/hello_world', 'user_token=' . $this->session->data['user_token'], true);
+        $data['cancel'] = $this->url->link('marketplace/extension', 'user_token=' . $this->session->data['user_token'] . '&type=module', true);
+        if (isset($this->request->get['module_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
+            $module_info = $this->model_setting_module->getModule($this->request->get['module_id']);
+        }
+        $data['name'] = $module_info['name'];
+        $data['title'] = $module_info['title'];
+        $data['message'] = $module_info['message'];
+        $data['status'] = $module_info['status'];
+        $data['header'] = $this->load->controller('common/header');
+        $data['column_left'] = $this->load->controller('common/column_left');
+        $data['footer'] = $this->load->controller('common/footer');
+        $this->response->setOutput($this->load->view('extension/module/hello_world', $data));
+    }
+    protected function validate() {
+        if (!$this->user->hasPermission('modify', 'extension/module/hello_world'))
+            $this->error['warning'] = $this->language->get('error_permission');
+        return !$this->error;
+    }
+}</pre></div>
+    
+                <div class="file-path">admin/view/template/extension/module/hello_world.twig</div>
+                <div class="code-block"><pre>{{ header }}{{ column_left }}
+&lt;div id="content"&gt;
+  &lt;div class="page-header"&gt;
+    &lt;div class="container-fluid"&gt;
+      &lt;div class="float-end"&gt;
+        &lt;button type="submit" form="form-module" data-bs-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary"&gt;&lt;i class="fas fa-save"&gt;&lt;/i&gt;&lt;/button&gt;
+        &lt;a href="{{ cancel }}" data-bs-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-light"&gt;&lt;i class="fas fa-reply"&gt;&lt;/i&gt;&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;h1&gt;{{ heading_title }}&lt;/h1&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class="container-fluid"&gt;
+    &lt;div class="card"&gt;
+      &lt;div class="card-header"&gt;&lt;i class="fas fa-pencil-alt"&gt;&lt;/i&gt; {{ text_edit }}&lt;/div&gt;
+      &lt;div class="card-body"&gt;
+        &lt;form id="form-module" method="post" action="{{ action }}" data-oc-toggle="ajax"&gt;
+          &lt;div class="row mb-3 required"&gt;
+            &lt;label class="col-sm-2 col-form-label"&gt;{{ entry_name }}&lt;/label&gt;
+            &lt;div class="col-sm-10"&gt;
+              &lt;input type="text" name="name" value="{{ name }}" class="form-control" /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row mb-3"&gt;
+            &lt;label class="col-sm-2 col-form-label"&gt;{{ entry_title }}&lt;/label&gt;
+            &lt;div class="col-sm-10"&gt;
+              &lt;input type="text" name="title" value="{{ title }}" class="form-control" /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row mb-3"&gt;
+            &lt;label class="col-sm-2 col-form-label"&gt;{{ entry_message }}&lt;/label&gt;
+            &lt;div class="col-sm-10"&gt;
+              &lt;textarea name="message" class="form-control"&gt;{{ message }}&lt;/textarea&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+          &lt;div class="row mb-3"&gt;
+            &lt;label class="col-sm-2 col-form-label"&gt;{{ entry_status }}&lt;/label&gt;
+            &lt;div class="col-sm-10"&gt;
+              &lt;input type="hidden" name="status" value="0"/&gt;
+              &lt;input type="checkbox" name="status" value="1" {% if status %}checked{% endif %} /&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/form&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+{{ footer }}</pre></div>
+    
+                <h3>Фронтальная часть</h3>
+                <div class="file-path">catalog/controller/extension/module/hello_world.php</div>
+                <div class="code-block"><pre>&lt;?php
+class ControllerExtensionModuleHelloWorld extends Controller {
+    public function index($setting) {
+        $data['message'] = isset($setting['message']) && !empty($setting['message']) 
+            ? html_entity_decode($setting['message'], ENT_QUOTES, 'UTF-8')
+            : 'Текст не задан в настройках модуля.';
+        $data['title'] = $setting['title'] ?? '';
+        return $this->load->view('extension/module/hello_world', $data);
+    }
+}</pre></div>
+    
+                <div class="file-path">catalog/view/theme/default/template/extension/module/hello_world.twig</div>
+                <div class="code-block"><pre>&lt;div class="card"&gt;
+  &lt;div class="card-header"&gt;
+    &lt;h5 class="card-title"&gt;{{ title }}&lt;/h5&gt;
+  &lt;/div&gt;
+  &lt;div class="card-body"&gt;
+    &lt;p&gt;{{ message }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre></div>
+    
+                <h3>Установка и активация</h3>
+                <ol>
+                    <li>Упаковать папку <code>hello_world</code> в ZIP‑архив.</li>
+                    <li>Админ‑панель → Расширения → Установщик расширений → загрузить архив.</li>
+                    <li>Расширения → Расширения → тип «Модули» → найти модуль → зелёная кнопка «Установить».</li>
+                    <li>Редактировать модуль, задать название, заголовок, текст, включить статус.</li>
+                    <li>Дизайн → Макеты → выбрать макет (Default) → добавить модуль, указать позицию (Column Left) и сортировку.</li>
+                </ol>
+            </section>
+    
+            <section id="tasks">
+                <h2>Часть 3. Индивидуальные задания (15 работ)</h2>
+                <p>Каждое задание развивает базовый модуль «Hello World». Уровень сложности сбалансирован для выполнения в рамках дисциплины «Платформы программирования».</p>
+                <div class="task-list">
+                    <div class="task-card"><h4><span class="task-num">1</span> Многоязычность</h4><p>Добавить в админ‑часть возможность ввода текста сообщения отдельно для каждого языка (русский/английский) с помощью мультиязычных полей.</p></div>
+                    <div class="task-card"><h4><span class="task-num">2</span> Изображение</h4><p>Добавить в настройки модуля поле для загрузки изображения и выводить его на витрине вместе с текстом.</p></div>
+                    <div class="task-card"><h4><span class="task-num">3</span> База данных</h4><p>Создать таблицу <code>oc_hello_world_quotes</code> (id, text). Разработать модель для работы с ней. Выводить случайную запись из таблицы.</p></div>
+                    <div class="task-card"><h4><span class="task-num">4</span> Выбор позиции</h4><p>Добавить в настройки выпадающий список позиций (левая колонка, правая колонка, контент) и динамически размещать модуль согласно выбору.</p></div>
+                    <div class="task-card"><h4><span class="task-num">5</span> Стилизация</h4><p>Подключить отдельный CSS‑файл модуля, изменить фон, шрифт, отступы блока.</p></div>
+                    <div class="task-card"><h4><span class="task-num">6</span> AJAX‑обновление</h4><p>Добавить кнопку «Обновить цитату», которая без перезагрузки страницы загружает новую случайную запись из БД (на основе задания 3).</p></div>
+                    <div class="task-card"><h4><span class="task-num">7</span> Выбор цвета</h4><p>В админ‑настройках добавить поле выбора цвета фона (color picker). Цвет применяется к блоку модуля на витрине.</p></div>
+                    <div class="task-card"><h4><span class="task-num">8</span> Ссылка в модуле</h4><p>Добавить поле «URL ссылки» и «Текст ссылки». Если заполнены, выводить кликабельный элемент под сообщением.</p></div>
+                    <div class="task-card"><h4><span class="task-num">9</span> Переключатель заголовка</h4><p>Добавить опцию «Показывать заголовок» (да/нет). При отключении заголовок не выводится.</p></div>
+                    <div class="task-card"><h4><span class="task-num">10</span> Иконка Font Awesome</h4><p>Позволить выбирать иконку из списка (например, fa-smile, fa-star) и отображать её перед заголовком.</p></div>
+                    <div class="task-card"><h4><span class="task-num">11</span> Кэширование</h4><p>Реализовать кэширование вывода модуля на 5 минут. Использовать метод <code>$this->cache->get()/set()</code>.</p></div>
+                    <div class="task-card"><h4><span class="task-num">12</span> CSS‑классы</h4><p>Добавить поле «Дополнительные CSS‑классы» в настройках модуля и применить их к контейнеру модуля.</p></div>
+                    <div class="task-card"><h4><span class="task-num">13</span> Ограничение длины текста</h4><p>Добавить настройку «Максимальная длина сообщения». Обрезать текст, если он превышает лимит, добавлять многоточие.</p></div>
+                    <div class="task-card"><h4><span class="task-num">14</span> Даты обновления</h4><p>При сохранении настроек модуля фиксировать дату последнего изменения и выводить её в блоке модуля («Последнее обновление: …»).</p></div>
+                    <div class="task-card"><h4><span class="task-num">15</span> Упаковка и документация</h4><p>Создать <code>install.json</code>, подготовить модуль к публикации, написать краткую документацию (установка, настройка).</p></div>
+                </div>
+                <div class="note">Задания выполняются индивидуально. Код должен соответствовать стандартам кодирования OpenCart. Результат предоставляется в виде архива с файлами и инструкцией по установке.</div>
+            </section>
+    
+            <section id="resources">
+                <h2>Часть 4. Полезные ресурсы</h2>
+                <ul>
+                    <li><a href="http://docs.opencart.com/developer/module/" target="_blank">Официальная документация разработчика OpenCart</a></li>
+                    <li><a href="https://www.opencart.com/index.php?route=marketplace/extension" target="_blank">Магазин расширений OpenCart</a></li>
+                    <li><a href="https://opencart.hostjars.com/creating-opencart-modules" target="_blank">DIY Module Builder (скелет модуля)</a></li>
+                    <li><a href="https://opencart.club/" target="_blank">Русскоязычное сообщество OpenCart.club</a></li>
+                </ul>
+                <div class="note warning">
+                    <strong>Безопасность</strong> – режим показа ошибок включать только на локальной среде. На рабочем сайте параметр «Показывать ошибки» должен быть отключён.
+                </div>
+                <div class="note">
+                    <strong>Альтернативный метод отладки</strong> – при пустом экране внести в <code>index.php</code> и <code>admin/index.php</code> после <code>&lt;?php</code> строки:<br>
+                    <code>ini_set('display_errors', 1); error_reporting(E_ALL);</code><br>
+                    После исправления ошибки код удалить.
+                </div>
+            </section>
+        </main>
+        <footer>
+            Учебные материалы для курса «Платформы программирования» | ИИТ БГУИР<br>
+            Рекомендуемая версия OpenCart 3.x. Все примеры протестированы.
+        </footer>
+    </div>
+    </body>
+    </html>
